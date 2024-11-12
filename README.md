@@ -6,8 +6,8 @@ Moonstruck Firebase Functions는 moonstruck 서비스의 **백엔드 로직**을
 
 ## **기술 스택**
 
-- Firebase Functions\*\*
-- TypeScript\*\*
+- Firebase Functions
+- TypeScript
 - Google Vertex AI
 - ESLint
 
