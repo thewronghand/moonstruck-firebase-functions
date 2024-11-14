@@ -1,9 +1,9 @@
 import * as express from 'express';
 import { KakaoService } from '../services/kakao.service';
+import { FirebaseService } from '../services/firebase.service';
 
 const router = express.Router();
 
-// '/kakao' 경로로 변경
 router.get('/kakao', async (req, res) => {
   const { code } = req.query;
 
@@ -13,10 +13,19 @@ router.get('/kakao', async (req, res) => {
 
   try {
     const token = await KakaoService.getToken(code as string);
-    return res.json({ token });
+    const user = await KakaoService.getUser(token.access_token);
+
+    // Firebase Custom Token 생성
+    const firebaseToken = await FirebaseService.createCustomToken(user);
+
+    return res.json({
+      token,
+      user,
+      firebaseToken, // 응답에 Firebase Custom Token 추가
+    });
   } catch (error) {
-    console.error('Error fetching token:', error);
-    return res.status(500).json({ error: 'Failed to fetch token.' });
+    console.error('Error in auth process:', error);
+    return res.status(500).json({ error: 'Authentication failed.' });
   }
 });
 
