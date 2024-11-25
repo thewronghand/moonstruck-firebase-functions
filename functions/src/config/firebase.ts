@@ -1,3 +1,5 @@
+/* eslint-disable indent */
+
 import * as admin from 'firebase-admin';
 import { getServiceAccountKey } from '../utils/loadSecrets';
 
