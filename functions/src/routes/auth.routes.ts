@@ -21,13 +21,10 @@ router.get('/kakao', async (req, res) => {
     );
     const user = await KakaoService.getUser(token.access_token);
 
-    // uid 생성
     const uid = `kakao:${user.id}`;
 
-    // 유저 정보 저장 (크레딧 관리를 위해)
     await UserService.saveUser(uid);
 
-    // Firebase Custom Token 생성
     const firebaseToken = await FirebaseService.createCustomToken(user);
 
     return res.json({
