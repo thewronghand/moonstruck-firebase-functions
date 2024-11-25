@@ -5,11 +5,11 @@ const googleConfig = require('eslint-config-google');
 
 module.exports = [
   {
-    files: ['src/**/*.ts'],
+    files: ['src/**/*.ts', 'src/**/*.d.ts'],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
-        project: ['tsconfig.json', 'tsconfig.dev.json'],
+        project: ['./tsconfig.json', './tsconfig.dev.json'],
       },
     },
     plugins: {
@@ -23,6 +23,15 @@ module.exports = [
       'require-jsdoc': 'off',
       'comma-dangle': 'off',
       '@typescript-eslint/no-explicit-any': 'warn',
+      '@typescript-eslint/no-unused-vars': [
+        'error',
+        {
+          vars: 'all',
+          args: 'after-used',
+          ignoreRestSiblings: true,
+        },
+      ],
+      'no-unused-vars': 'off',
       indent: ['error', 2],
       'new-cap': 'off',
       'max-len': ['error', { code: 120 }],
