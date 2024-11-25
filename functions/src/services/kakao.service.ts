@@ -1,13 +1,18 @@
 import axios from 'axios';
 import { TokenResponse, KakaoUser } from '../types';
-import { kakaoConfig } from '../config';
+import { getKakaoRestApiKey } from '../utils/loadSecrets';
 
 export class KakaoService {
-  static async getToken(code: string): Promise<TokenResponse> {
+  static async getToken(
+    code: string,
+    redirectUri: string
+  ): Promise<TokenResponse> {
+    const kakaoRestApiKey = await getKakaoRestApiKey();
+
     const body = {
       grant_type: 'authorization_code',
-      client_id: kakaoConfig.restApiKey,
-      redirect_uri: kakaoConfig.redirectUri,
+      client_id: kakaoRestApiKey,
+      redirect_uri: redirectUri,
       code,
     };
 
@@ -25,7 +30,9 @@ export class KakaoService {
       return response.data;
     } catch (error: any) {
       console.error('Kakao API Error:', error.response?.data || error.message);
-      throw new Error('Failed to fetch token.');
+      throw new Error(
+        error.response?.data?.error_description || 'Failed to fetch token'
+      );
     }
   }
 

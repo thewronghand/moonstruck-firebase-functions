@@ -1,14 +1,21 @@
 import * as functions from 'firebase-functions/v2';
-import { initializeFirebaseAdmin } from './config';
+import { initializeFirebaseAdmin } from './config/firebase';
 import app from './app';
 
-// Firebase Admin 초기화
-initializeFirebaseAdmin();
-
-// Secret Manager를 사용하도록 설정
-export const auth = functions.https.onRequest(
+export const api = functions.https.onRequest(
   {
-    secrets: ['SERVICE_ACCOUNT_KEY'],
+    timeoutSeconds: 120,
+    minInstances: 0,
+    memory: '256MiB',
+    cors: true,
   },
-  app
+  async (req, res) => {
+    try {
+      await initializeFirebaseAdmin();
+      return app(req, res);
+    } catch (error) {
+      console.error('Function initialization error:', error);
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  }
 );

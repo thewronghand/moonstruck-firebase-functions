@@ -1,19 +1,24 @@
 import * as admin from 'firebase-admin';
+import { getServiceAccountKey } from '../utils/loadSecrets';
 
-export function initializeFirebaseAdmin() {
+export async function initializeFirebaseAdmin(): Promise<
+  admin.app.App | undefined
+> {
   try {
-    // 프로덕션 환경용 코드 (Secret Manager 사용)
-    const serviceAccountKey = JSON.parse(process.env.SERVICE_ACCOUNT_KEY || '');
-
     if (!admin.apps.length) {
+      const serviceAccountKey = await getServiceAccountKey();
       admin.initializeApp({
-        credential: admin.credential.cert(serviceAccountKey),
+        credential: admin.credential.cert(JSON.parse(serviceAccountKey)),
+        projectId: 'moonstruck-b17d6',
       });
+      console.log('Firebase Admin initialized successfully');
     }
-
     return admin.app();
   } catch (error) {
     console.error('Failed to initialize Firebase Admin:', error);
-    throw error;
+    if (process.env.NODE_ENV === 'production') {
+      throw error;
+    }
+    return undefined;
   }
 }
