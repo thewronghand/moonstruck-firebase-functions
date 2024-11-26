@@ -25,7 +25,7 @@ app.use(
     err: Error,
     req: express.Request,
     res: express.Response,
-    next: express.NextFunction // eslint-disable-line @typescript-eslint/no-unused-vars
+    _next: express.NextFunction
   ) => {
     console.error('Error:', err);
     res.status(500).json({ error: 'Internal Server Error' });
