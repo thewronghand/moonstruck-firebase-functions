@@ -6,6 +6,7 @@ const googleConfig = require('eslint-config-google');
 module.exports = [
   {
     files: ['src/**/*.ts', 'src/**/*.d.ts'],
+    ignores: ['**/lib/**', '**/generated/**'],
     languageOptions: {
       parser: typescriptParser,
       parserOptions: {
@@ -26,8 +27,8 @@ module.exports = [
       '@typescript-eslint/no-unused-vars': [
         'error',
         {
-          vars: 'all',
-          args: 'after-used',
+          argsIgnorePattern: '^_',
+          varsIgnorePattern: '^_',
           ignoreRestSiblings: true,
         },
       ],
@@ -45,6 +46,5 @@ module.exports = [
         },
       ],
     },
-    ignores: ['/lib/**/*', '/generated/**/*'],
   },
 ];
