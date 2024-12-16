@@ -29,6 +29,6 @@ const handleReading: RequestHandler = async (req, res) => {
   }
 };
 
-router.post('/vertex-claude', authMiddleware, handleReading);
+router.post('/', authMiddleware, handleReading);
 
 export default router;

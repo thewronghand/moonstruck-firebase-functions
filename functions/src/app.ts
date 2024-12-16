@@ -13,7 +13,7 @@ app.use(express.json());
 // 라우트 설정
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
-app.use('/api', vertexClaudeRoutes);
+app.use('/vertex-claude', vertexClaudeRoutes);
 
 // 404 에러 핸들러
 app.use((req, res) => {
