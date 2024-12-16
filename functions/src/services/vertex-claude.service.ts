@@ -61,25 +61,39 @@ export class VertexClaudeService {
     return '/v1/projects/moonstruck-1/locations/us-east5/publishers/google/models/claude-3-sonnet-20240229:rawPredict';
   }
 
-  async generateReading(formattedQuery: string): Promise<any> {
+  async generateReading(query: string): Promise<any> {
     try {
       const token = await this.getAccessToken();
       const client = this.createVertexClient(token);
 
-      const response = await client.post(this.getEndpointPath(), {
-        anthropic_version: 'vertex-2023-10-16',
-        messages: [
-          { role: 'user', content: vertexClaudePrompt.system.input },
-          { role: 'assistant', content: vertexClaudePrompt.system.response },
-          { role: 'user', content: formattedQuery },
-        ],
-        max_tokens: 1024,
-        temperature: 0.7,
-      });
+      const response = await client.post(
+        this.getEndpointPath(),
+        {
+          anthropic_version: 'vertex-2023-10-16',
+          messages: [
+            { role: 'user', content: vertexClaudePrompt.system.input },
+            { role: 'assistant', content: vertexClaudePrompt.system.response },
+            { role: 'user', content: query },
+          ],
+          max_tokens: 1024,
+          temperature: 0.7,
+        }
+      );
 
       return response.data;
     } catch (error) {
-      console.error('Vertex Claude API Error:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Vertex API Detailed Error:', {
+          status: error.response?.status,
+          statusText: error.response?.statusText,
+          data: error.response?.data,
+          config: {
+            url: error.config?.url,
+            headers: error.config?.headers,
+            method: error.config?.method,
+          }
+        });
+      }
       throw this.handleError(error);
     }
   }
