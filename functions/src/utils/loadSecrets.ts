@@ -35,3 +35,7 @@ export async function getKakaoRestApiKey(): Promise<string> {
 export async function getServiceAccountKey(): Promise<string> {
   return getSecret('SERVICE_ACCOUNT_KEY');
 }
+
+export async function getVertexServiceAccountKey(): Promise<string> {
+  return getSecret('VERTEX_AI_SERVICE_ACCOUNT_KEY');
+}
