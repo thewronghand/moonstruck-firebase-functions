@@ -1,7 +1,7 @@
 import { GoogleAuth, OAuth2Client } from 'google-auth-library';
 import axios from 'axios';
 import { vertexClaudePrompt } from '../data/prompts/vertex-claude.prompt';
-import { getServiceAccountKey } from '../utils/loadSecrets';
+import { getVertexServiceAccountKey } from '../utils/loadSecrets';
 
 export class VertexClaudeService {
   private static instance: VertexClaudeService;
@@ -22,7 +22,7 @@ export class VertexClaudeService {
       return this.accessToken;
     }
 
-    const serviceAccountKey = await getServiceAccountKey();
+    const serviceAccountKey = await getVertexServiceAccountKey();
     const credentials = JSON.parse(serviceAccountKey);
 
     const auth = new GoogleAuth({
@@ -56,9 +56,9 @@ export class VertexClaudeService {
       },
     });
   }
-
+  /* eslint-disable max-len */
   private getEndpointPath(): string {
-    return '/v1/projects/moonstruck-1/locations/us-east5/publishers/google/models/claude-3-sonnet-20240229:rawPredict';
+    return '/v1/projects/moonstruck-1/locations/us-east5/publishers/anthropic/models/claude-3-5-sonnet@20240620:rawPredict';
   }
 
   async generateReading(query: string): Promise<any> {
