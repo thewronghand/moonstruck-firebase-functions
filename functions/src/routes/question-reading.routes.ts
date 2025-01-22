@@ -3,7 +3,7 @@ import { QuestionReadingRepositoryService } from '../services/question-reading-r
 
 const router = Router();
 
-router.post('/save-question-reading', async (req: Request, res: Response): Promise<void> => {
+router.post('/save', async (req: Request, res: Response): Promise<void> => {
   try {
     const { question, cards, interpretation } = req.body;
 
@@ -28,7 +28,7 @@ router.post('/save-question-reading', async (req: Request, res: Response): Promi
   }
 });
 
-router.get('/get-question-reading/:readingId', async (req: Request, res: Response): Promise<void> => {
+router.get('/get/:readingId', async (req: Request, res: Response): Promise<void> => {
   try {
     const { readingId } = req.params;
 
