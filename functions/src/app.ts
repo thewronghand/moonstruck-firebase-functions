@@ -3,6 +3,7 @@ import * as cors from 'cors';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import vertexClaudeRoutes from './routes/vertex-claude.routes';
+import questionReadingRoutes from './routes/question-reading.routes';
 
 const app = express();
 
@@ -14,6 +15,7 @@ app.use(express.json());
 app.use('/auth', authRoutes);
 app.use('/user', userRoutes);
 app.use('/vertex-claude', vertexClaudeRoutes);
+app.use('/question-reading', questionReadingRoutes);
 
 // 404 에러 핸들러
 app.use((req, res) => {
