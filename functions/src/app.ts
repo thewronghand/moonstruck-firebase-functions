@@ -1,5 +1,5 @@
 import * as express from 'express';
-import * as cors from 'cors';
+import { corsMiddleware } from './middleware/cors.middleware';
 import authRoutes from './routes/auth.routes';
 import userRoutes from './routes/user.routes';
 import vertexClaudeRoutes from './routes/vertex-claude.routes';
@@ -8,7 +8,7 @@ import questionReadingRoutes from './routes/question-reading.routes';
 const app = express();
 
 // Express 미들웨어 설정
-app.use(cors()); // 기본 CORS 설정
+app.use(corsMiddleware);
 app.use(express.json());
 
 // 라우트 설정
