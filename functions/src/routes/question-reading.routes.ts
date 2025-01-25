@@ -5,12 +5,12 @@ const router = Router();
 
 router.post('/save', async (req: Request, res: Response): Promise<void> => {
   try {
-    const { question, cards, interpretation } = req.body;
+    const { question, cards, interpretation, spreadType } = req.body;
 
-    if (!question || !cards || !interpretation) {
+    if (!question || !cards || !interpretation || !spreadType) {
       res.status(400).json({
         error: 'Missing required fields',
-        details: 'Question, cards, and interpretation are required'
+        details: 'Question, cards, interpretation, and spreadType are required'
       });
       return;
     }
@@ -18,7 +18,8 @@ router.post('/save', async (req: Request, res: Response): Promise<void> => {
     const readingId = await QuestionReadingRepositoryService.saveReading({
       question,
       cards,
-      interpretation
+      interpretation,
+      spreadType
     });
 
     res.json({ readingId });

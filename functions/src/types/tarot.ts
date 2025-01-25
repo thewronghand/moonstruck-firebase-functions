@@ -1,3 +1,5 @@
+import { SpreadType } from './spread';
+
 export interface DrawnTarotCard {
     id: number;
     name: {
@@ -18,10 +20,12 @@ export interface TarotReading {
   cards: DrawnTarotCard[];
   interpretation: string;
   createdAt: string;
+  spreadType: SpreadType;
 }
 
 export interface SaveTarotReadingRequest {
   question: string;
   cards: DrawnTarotCard[];
   interpretation: string;
+  spreadType: SpreadType;
 }
