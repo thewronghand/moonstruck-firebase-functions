@@ -4,7 +4,7 @@ import { vertexClaudePrompt } from '../data/prompts/vertex-claude.prompt';
 import { getVertexServiceAccountKey } from '../utils/loadSecrets';
 import { formatReadingPrompt } from '../utils/promptFormatter';
 import type { DrawnTarotCard } from '../types/tarot';
-import type { SpreadType } from '../types/spread';
+import type { SpreadInfo } from '../types/spread';
 
 export class VertexClaudeService {
   private static instance: VertexClaudeService;
@@ -66,12 +66,12 @@ export class VertexClaudeService {
   async generateReading(
     userInput: string,
     cards: DrawnTarotCard[],
-    spreadType: SpreadType
+    spreadInfo: SpreadInfo
   ): Promise<any> {
     try {
       const token = await this.getAccessToken();
       const client = this.createVertexClient(token);
-      const formattedPrompt = formatReadingPrompt(userInput, cards, spreadType);
+      const formattedPrompt = formatReadingPrompt(userInput, cards, spreadInfo);
 
       const response = await client.post(
         this.getEndpointPath(),
@@ -108,18 +108,13 @@ export class VertexClaudeService {
   private handleError(error: any): Error {
     if (axios.isAxiosError(error)) {
       const statusCode = error.response?.status;
-      const errorMessage = error.response?.data?.error?.message || error.message;
+      const errorData = error.response?.data?.error;
 
-      switch (statusCode) {
-        case 401:
-          return new Error('인증 오류가 발생했습니다. 서비스 계정 키를 확인해주세요.');
-        case 403:
-          return new Error('권한이 없습니다. 서비스 계정의 권한을 확인해주세요.');
-        case 429:
-          return new Error('요청이 너무 많습니다. 잠시 후 다시 시도해주세요.');
-        default:
-          return new Error(`API 오류: ${errorMessage}`);
-      }
+      // Vertex API 에러 정보를 그대로 포함
+      const vertexError = new Error(errorData?.message || error.message);
+      (vertexError as any).statusCode = statusCode;
+      (vertexError as any).vertexError = errorData;
+      return vertexError;
     }
     return error instanceof Error ? error : new Error('알 수 없는 오류가 발생했습니다.');
   }
