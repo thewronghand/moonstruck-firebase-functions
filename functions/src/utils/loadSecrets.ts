@@ -39,3 +39,7 @@ export async function getServiceAccountKey(): Promise<string> {
 export async function getVertexServiceAccountKey(): Promise<string> {
   return getSecret('VERTEX_AI_SERVICE_ACCOUNT_KEY');
 }
+
+export async function getGeminiApiKey(): Promise<string> {
+  return getSecret('GEMINI_API_KEY');
+}
