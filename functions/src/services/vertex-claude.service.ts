@@ -5,19 +5,20 @@ import { getVertexServiceAccountKey } from '../utils/loadSecrets';
 import { formatReadingPrompt } from '../utils/promptFormatter';
 import type { DrawnTarotCard } from '../types/tarot';
 import type { SpreadInfo } from '../types/spread';
+import { AIService, AIServiceError } from '../types/ai-service';
 
-export class VertexClaudeService {
+export class VertexClaudeService implements AIService {
   private static instance: VertexClaudeService;
   private accessToken: string | null = null;
   private tokenExpiry: Date | null = null;
 
-  private constructor() {}
+  private constructor() {}// private 생성자
 
   public static getInstance(): VertexClaudeService {
-    if (!this.instance) {
-      this.instance = new VertexClaudeService();
+    if (!VertexClaudeService.instance) {
+      VertexClaudeService.instance = new VertexClaudeService();
     }
-    return this.instance;
+    return VertexClaudeService.instance;
   }
 
   private async getAccessToken(): Promise<string> {
@@ -105,17 +106,16 @@ export class VertexClaudeService {
     }
   }
 
-  private handleError(error: any): Error {
+  private handleError(error: any): AIServiceError {
     if (axios.isAxiosError(error)) {
       const statusCode = error.response?.status;
       const errorData = error.response?.data?.error;
 
-      // Vertex API 에러 정보를 그대로 포함
-      const vertexError = new Error(errorData?.message || error.message);
-      (vertexError as any).statusCode = statusCode;
-      (vertexError as any).vertexError = errorData;
-      return vertexError;
+      const serviceError = new Error(errorData?.message || error.message) as AIServiceError;
+      serviceError.statusCode = statusCode;
+      serviceError.vertexError = errorData;
+      return serviceError;
     }
-    return error instanceof Error ? error : new Error('알 수 없는 오류가 발생했습니다.');
+    return error;
   }
 }
