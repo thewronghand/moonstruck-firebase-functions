@@ -14,3 +14,8 @@ export interface AIService {
     spreadInfo: SpreadInfo
   ): Promise<any>;
 }
+
+export interface AIResponse {
+  content: Array<{ text: string }>;
+  model: string;
+}

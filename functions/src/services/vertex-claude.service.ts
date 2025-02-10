@@ -5,10 +5,11 @@ import { getVertexServiceAccountKey } from '../utils/loadSecrets';
 import { formatReadingPrompt } from '../utils/promptFormatter';
 import type { DrawnTarotCard } from '../types/tarot';
 import type { SpreadInfo } from '../types/spread';
-import { AIService, AIServiceError } from '../types/ai-service';
+import { AIService, AIServiceError, AIResponse } from '../types/ai-service';
 
 export class VertexClaudeService implements AIService {
   private static instance: VertexClaudeService;
+  private static readonly MODEL_NAME = 'claude-3-5-sonnet';
   private accessToken: string | null = null;
   private tokenExpiry: Date | null = null;
 
@@ -61,18 +62,20 @@ export class VertexClaudeService implements AIService {
   }
   /* eslint-disable max-len */
   private getEndpointPath(): string {
-    return '/v1/projects/moonstruck-1/locations/us-east5/publishers/anthropic/models/claude-3-5-sonnet@20240620:rawPredict';
+    return `/v1/projects/moonstruck-1/locations/us-east5/publishers/anthropic/models/${VertexClaudeService.MODEL_NAME}@20240620:rawPredict`;
   }
 
   async generateReading(
     userInput: string,
     cards: DrawnTarotCard[],
     spreadInfo: SpreadInfo
-  ): Promise<any> {
+  ): Promise<AIResponse> {
     try {
       const token = await this.getAccessToken();
       const client = this.createVertexClient(token);
       const formattedPrompt = formatReadingPrompt(userInput, cards, spreadInfo);
+
+      console.log('🎭 Vertex Claude Prompt:', formattedPrompt);// 프롬프트 확인
 
       const response = await client.post(
         this.getEndpointPath(),
@@ -88,7 +91,16 @@ export class VertexClaudeService implements AIService {
         }
       );
 
-      return response.data;
+      console.log('✨ Vertex Claude Response:', {
+        model: VertexClaudeService.MODEL_NAME,
+        content: response.data.content[0].text.slice(0, 100) + '...',
+        length: response.data.content[0].text.length
+      });
+
+      return {
+        content: response.data.content,
+        model: VertexClaudeService.MODEL_NAME
+      };
     } catch (error) {
       if (axios.isAxiosError(error)) {
         console.error('Vertex API Detailed Error:', {

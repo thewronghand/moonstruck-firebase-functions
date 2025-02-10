@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import type { RequestHandler } from 'express';
 import { TarotReadingService } from '../services/tarot-reading.service';
+import { GeminiService } from '../services/gemini.service';
 import { VertexClaudeService } from '../services/vertex-claude.service';
 import { authMiddleware } from '../middleware/auth.middleware';
 import type { DrawnTarotCard } from '../types/tarot';
@@ -8,8 +9,17 @@ import type { SpreadInfo } from '../types/spread';
 import { AIServiceError } from '../types/ai-service';
 
 const router = Router();
-const vertexClaudeService = VertexClaudeService.getInstance();
-const tarotReadingService = new TarotReadingService(vertexClaudeService);
+let tarotReadingService: TarotReadingService;
+
+// 서비스 초기화 함수
+async function initializeServices() {
+  const geminiService = await GeminiService.getInstance();
+  const vertexService = await VertexClaudeService.getInstance();
+  tarotReadingService = new TarotReadingService(
+    geminiService, // Primary
+    vertexService // Fallback
+  );
+}
 
 interface ReadingRequest {
   userInput: string;
@@ -18,6 +28,10 @@ interface ReadingRequest {
 }
 
 const handleReading: RequestHandler = async (req, res) => {
+  if (!tarotReadingService) {
+    await initializeServices();
+  }
+
   try {
     const { userInput, cards, spreadInfo } = req.body as ReadingRequest;
 
