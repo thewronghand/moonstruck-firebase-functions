@@ -1,4 +1,4 @@
-import { DecodedIdToken } from 'firebase-admin/auth';
+// import { DecodedIdToken } from 'firebase-admin/auth';
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-namespace */
@@ -6,7 +6,10 @@ import { DecodedIdToken } from 'firebase-admin/auth';
 declare global {
   namespace Express {
     interface Request {
-      user?: DecodedIdToken;
+      user?: {
+        uid: string;
+        [key: string]: any;
+      };
     }
   }
 }

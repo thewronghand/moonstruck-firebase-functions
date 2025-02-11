@@ -8,11 +8,14 @@ export const authMiddleware = async (
 ): Promise<void> => {
   const authHeader = req.headers.authorization;
 
+  // 인증 헤더가 없는 경우 게스트로 처리
   if (!authHeader?.startsWith('Bearer ')) {
-    res.status(401).json({ error: 'No token provided' });
+    req.user = { uid: 'guest' };
+    next();
     return;
   }
 
+  // 인증 헤더가 있는 경우 토큰 검증 시도
   const token = authHeader.split('Bearer ')[1];
 
   try {
@@ -20,7 +23,8 @@ export const authMiddleware = async (
     req.user = decodedToken;
     next();
   } catch (error) {
-    console.error('Auth error:', error);
-    res.status(401).json({ error: 'Invalid token' });
+    console.warn('Token verification failed, proceeding as guest:', error);
+    req.user = { uid: 'guest' };
+    next();
   }
 };

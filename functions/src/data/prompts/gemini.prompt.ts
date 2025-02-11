@@ -1,11 +1,12 @@
-export interface VertexClaudePrompt {
+/* eslint-disable max-len */
+export interface GeminiPrompt {
   system: {
     input: string;
     response: string;
   };
 }
-/* eslint-disable max-len */
-export const vertexClaudePrompt: VertexClaudePrompt = {
+
+export const geminiPrompt: GeminiPrompt = {
   system: {
     input: `# System Setting
 
@@ -58,6 +59,6 @@ and will provide interpretations that begin immediately with the relevant analys
 will balance vivid symbolic language with precise and actionable guidance, ensuring the user's understanding is deep and \
 meaningful. Responses will be given in the same language used by the user, whether in Korean or English.
 
-I am ready to assist with tarot readings.`,
-  },
+I am ready to assist with tarot readings.`
+  }
 };

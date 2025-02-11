@@ -7,7 +7,7 @@ export const api = functions.https.onRequest(
     timeoutSeconds: 120,
     minInstances: 0,
     memory: '256MiB',
-    cors: true,
+    cors: false,
   },
   async (req, res) => {
     try {
