@@ -14,18 +14,18 @@ export interface DrawnTarotCard {
     description: string;
   }
 
-export interface TarotReading {
-  id: string;
-  question: string;
-  cards: DrawnTarotCard[];
-  interpretation: string;
-  createdAt: string;
-  spreadType: SpreadType;
-}
-
 export interface SaveTarotReadingRequest {
   question: string;
   cards: DrawnTarotCard[];
-  interpretation: string;
+  interpretation: {
+    content: string;
+    title: string;
+    model: string;
+  };
   spreadType: SpreadType;
+}
+
+export interface TarotReading extends SaveTarotReadingRequest {
+  id: string;
+  createdAt: string;
 }

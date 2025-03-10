@@ -6,6 +6,7 @@ import { formatReadingPrompt } from '../utils/promptFormatter';
 import { getGeminiApiKey } from '../utils/loadSecrets'; // 기존 함수 사용
 import { geminiPrompt } from '../data/prompts/gemini.prompt';
 import type { AIResponse } from '../types/ai-service';
+import { parseAIResponse } from '../utils/response-parser';
 
 export class GeminiService implements AIService {
   private static instance: GeminiService;
@@ -57,9 +58,14 @@ export class GeminiService implements AIService {
         length: responseText.length
       });
 
+      const { content, title } = parseAIResponse(responseText);
+
       return {
-        content: [{ text: responseText }],
-        model: GeminiService.MODEL_NAME
+        content,
+        title,
+        model: GeminiService.MODEL_NAME,
+        rawResponse: responseText
+
       };
     } catch (error) {
       console.error('❌ Gemini API Error:', error instanceof Error ? error.message : 'Unknown error');

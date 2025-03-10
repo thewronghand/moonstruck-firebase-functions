@@ -6,6 +6,7 @@ import { formatReadingPrompt } from '../utils/promptFormatter';
 import type { DrawnTarotCard } from '../types/tarot';
 import type { SpreadInfo } from '../types/spread';
 import { AIService, AIServiceError, AIResponse } from '../types/ai-service';
+import { parseAIResponse } from '../utils/response-parser';
 
 export class VertexClaudeService implements AIService {
   private static instance: VertexClaudeService;
@@ -97,9 +98,14 @@ export class VertexClaudeService implements AIService {
         length: response.data.content[0].text.length
       });
 
+      const responseText = response.data.content[0].text;
+      const { content, title } = parseAIResponse(responseText);
+
       return {
-        content: response.data.content,
-        model: VertexClaudeService.MODEL_NAME
+        content,
+        title,
+        model: VertexClaudeService.MODEL_NAME,
+        rawResponse: responseText
       };
     } catch (error) {
       if (axios.isAxiosError(error)) {

@@ -15,6 +15,14 @@ router.post('/save', async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    if (!interpretation.content || !interpretation.title) {
+      res.status(400).json({
+        error: 'Invalid interpretation format',
+        details: 'Interpretation must include content and title'
+      });
+      return;
+    }
+
     const readingId = await QuestionReadingRepositoryService.saveReading({
       question,
       cards,
