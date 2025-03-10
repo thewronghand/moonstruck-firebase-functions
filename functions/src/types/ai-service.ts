@@ -16,6 +16,8 @@ export interface AIService {
 }
 
 export interface AIResponse {
-  content: Array<{ text: string }>;
+  content: string;
+  title: string;
   model: string;
+  rawResponse?: string;
 }
